@@ -3,17 +3,18 @@
 import Control.Monad
 import qualified Data.ByteString as BS
 import qualified Data.ByteString.Char8 as C
-mport Data.Maybe
-
 import Data.Maybe
-import Text.Read
 
 main :: IO ()
 main = do
-  putStrLn $ show $ solve
+  [sx,sy,gx,gy] <- readIntList <$> C.getLine
+  putStrLn $ show $ solve sx sy gx gy
 
-solve :: Int
-solve = undefined
+
+solve :: Int -> Int -> Int -> Int -> Double
+solve sx sy gx gy = sx' + sy' * ((gx' - sx') / (gy' + sy'))
+  where
+    [sx',sy',gx',gy'] = map fromIntegral [sx,sy,gx,gy]
 
 readInt :: BS.ByteString -> Int
 readInt = fst . fromJust . C.readInt

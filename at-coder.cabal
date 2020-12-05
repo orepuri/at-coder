@@ -33,6 +33,7 @@ library
   build-depends:
       array
     , base >=4.7 && <5
+    , bytestring
   default-language: Haskell2010
 
 executable at-coder-exe
@@ -46,6 +47,7 @@ executable at-coder-exe
       array
     , at-coder
     , base >=4.7 && <5
+    , bytestring
   default-language: Haskell2010
 
 test-suite at-coder-test
@@ -60,4 +62,5 @@ test-suite at-coder-test
       array
     , at-coder
     , base >=4.7 && <5
+    , bytestring
   default-language: Haskell2010
