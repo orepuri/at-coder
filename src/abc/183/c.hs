@@ -10,11 +10,20 @@ import Data.Maybe
 
 main :: IO ()
 main = do
-  putStrLn $ show $ solve
+  [n,k] <- readIntList
+  routes <- readIntLists n
+  putStrLn $ show $ solve n k routes
 
-solve :: Int
-solve = undefined
-
+solve :: Int -> Int -> [[Int]] -> Int
+solve n k routes =
+  length $ filter (== k) $ map calcTime (permutations [1..n-1])
+  where
+    routes' = UA.listArray ((0,0),(n-1,n-1)) (concat routes) :: UA.UArray (Int,Int) Int
+    calcTime xs = sum $ map (\(x,y) -> routes' UA.! (x,y)) path'
+      where
+        path  = 0 : xs ++ [0]
+        path' = zip path $ tail path
+    
 
 readInt :: IO Int
 readInt = toInt <$> C.getLine
