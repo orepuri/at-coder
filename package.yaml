@@ -24,6 +24,9 @@ dependencies:
 - array
 - bytestring
 - vector
+- unboxing-vector
+- containers
+- primitive
 
 library:
   source-dirs: src

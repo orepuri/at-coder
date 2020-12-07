@@ -22,11 +22,54 @@ import qualified Data.Vector.Unboxing.Mutable as VUGM
 
 main :: IO ()
 main = do
-  putStrLn $ show $ solve
+  [n,q] <- readIntList
+  classes <- readIntVec
+  classMap <- VM.replicate n M.empty
+  V.forM_ (V.enumFromN 0 n) $ \i -> do
+    VM.write classMap i $ M.singleton (classes VU.! i) 1
+  fu <- VUM.replicate n 0
+  V.forM_ (V.enumFromN 0 n) $ \i -> do
+    VUM.write fu i i
+  solve n q classMap fu
 
-solve :: Int
-solve = undefined
+type ClassMap = VM.MVector (PrimState IO) (M.Map Int Int)
+type FU = VUM.MVector (PrimState IO) Int
 
+solve :: Int -> Int -> ClassMap -> FU -> IO ()
+solve n q classMap fu = do
+  V.forM_ (V.enumFromN 0 q) $ \i -> do
+    input <- readIntList
+    case input of 
+      [1,a,b] -> do unite (a-1) (b-1) classMap fu
+      [2,x,y] -> do query (x-1) y classMap fu
+
+unite :: Int -> Int -> ClassMap -> FU -> IO ()
+unite x y classMap fu = do
+  leaderX <- getLeader x fu
+  leaderY <- getLeader y fu
+  if leaderX == leaderY then return ()
+  else do
+    xClasses <- VM.read classMap leaderX
+    yClasses <- VM.read classMap leaderY
+    let (nLeader, pLeader, bmap, lmap) = if M.size xClasses > M.size yClasses then (leaderX, leaderY, xClasses, yClasses) else (leaderY, leaderX, yClasses, xClasses)
+    let updated = M.foldlWithKey (\acc key value ->  let newValue = value + M.findWithDefault 0 key bmap in M.insert key newValue acc) bmap lmap
+    VM.write classMap nLeader updated
+    VUM.write fu pLeader nLeader
+
+getLeader :: Int -> FU -> IO Int
+getLeader x fu = do
+  rx <- VUM.read fu x
+  if rx == x then return x
+  else do
+    rx' <- getLeader rx fu
+    VUM.write fu x rx'
+    return rx'
+
+query :: Int -> Int -> ClassMap -> FU -> IO ()
+query x y classMap fu = do
+  leader <- getLeader x fu
+  classes <- VM.read classMap leader
+  print $ M.findWithDefault 0 y classes
 
 -- Input
 
