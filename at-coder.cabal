@@ -38,6 +38,7 @@ library
     , primitive
     , unboxing-vector
     , vector
+    , vector-algorithms
   default-language: Haskell2010
 
 executable at-coder-exe
@@ -56,6 +57,7 @@ executable at-coder-exe
     , primitive
     , unboxing-vector
     , vector
+    , vector-algorithms
   default-language: Haskell2010
 
 test-suite at-coder-test
@@ -75,4 +77,5 @@ test-suite at-coder-test
     , primitive
     , unboxing-vector
     , vector
+    , vector-algorithms
   default-language: Haskell2010
