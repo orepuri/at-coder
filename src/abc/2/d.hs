@@ -7,6 +7,7 @@ import Control.Monad.Primitive
 import qualified Data.Array as A
 import qualified Data.Array.IO as IO
 import qualified Data.Array.Unboxed as UA
+import Data.Bits
 import qualified Data.ByteString as BS
 import qualified Data.ByteString.Char8 as C
 import Data.Char
@@ -26,10 +27,28 @@ import Text.Printf
 
 main :: IO ()
 main = do
-  putStrLn $ show $ solve
+  [n,m] <- readIntList
+  relations <- IO.newArray ((1,1),(n,n)) False :: IO (IO.IOUArray (Int, Int) Bool)
+  pairs <- map (\[x, y] -> (x, y)) <$> readIntLists m
+  forM_ pairs $ \p -> do
+    IO.writeArray relations p True
+  freezed <- IO.freeze relations
+  putStrLn $ show $ solve n m freezed
 
-solve :: Int
-solve = undefined
+solve :: Int -> Int -> UA.Array (Int, Int) Bool -> Int
+solve n m relations =
+  VU.maximum $ VU.map (\c -> members c n relations) $ VU.enumFromN 0 (2 ^ n)
+
+members :: Int -> Int -> UA.Array (Int, Int) Bool -> Int
+members c n relations =
+  let pairs = toPairs c n
+  in
+    if all (\p -> relations UA.! p) pairs then popCount c
+    else 0
+
+toPairs :: Int -> Int -> [(Int, Int)]
+toPairs x n = let xs = filter (testBit x) [0..n-1]
+  in [(p1 + 1, p2 + 1) | p1 <- xs, p2 <- tail xs, p1 < p2]
 
 
 -- Input
@@ -56,6 +75,14 @@ type Parser a = BS.ByteString -> Maybe (a, BS.ByteString)
 
 parseChar :: Parser Char
 parseChar = C.uncons
+
+parsePairWith :: Int -> Char -> (BS.ByteString -> BS.ByteString -> a) -> Parser a
+parsePairWith n digit f str = if BS.null str then Nothing
+              else
+                Just (f x y, rest)
+  where
+    (head, rest) = C.splitAt n str
+    [x, y] = C.splitWith (== digit) head
 
 parseIntTupleWith :: Int -> Char -> Parser (Int, Int)
 parseIntTupleWith n digit str = if BS.null str then Nothing
