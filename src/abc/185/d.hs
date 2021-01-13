@@ -8,10 +8,14 @@ main :: IO ()
 main = do
   [n, m] <- map read . words <$> getLine :: IO [Int]
   as <- unfoldr (C.readInt . C.dropWhile isSpace) <$> C.getLine
-  print $ solve $ sort as
+  asu <- VU.thaw $ VU.fromList (0 : as ++ [n + 1])
+  VAI.sort asu
+  sorted <- VU.freeze asu
+  print $ solve sorted
 
-solve :: [Int] -> Int
-solve as = sum $ map (\i -> ceiling $ fromIntegral i / fromIntegral k) diffs
+solve :: VU.Vector Int -> Int
+solve as = if VU.null diffs then 0
+  else VU.sum $ VU.map (\i -> (i + k - 1) `div` k) diffs
   where
-    diffs = zipWith (\x y -> x - y - 1) (0:as) as
-    k = minimum diffs
+    diffs = VU.filter (>0) $ VU.zipWith ((-) . pred) (VU.tail as) as
+    k = VU.minimum diffs
