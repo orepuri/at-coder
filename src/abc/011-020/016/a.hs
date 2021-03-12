@@ -1,0 +1,4 @@
+main :: IO ()
+main = do
+  [m, d] <- map read . words <$> getLine
+  putStrLn $ if m `mod` d == 0 then "YES" else "NO"
