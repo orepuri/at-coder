@@ -16,14 +16,30 @@ main = do
     forM_ [1..gw] $ \w -> do
       let c = shrinkGrid UA.! (w, h)
       when (c == '.') $ do
-        print $ "white = " ++ show (w, h)
-        print $ "neighbors = " ++ show (neighbors w h)
         forM_ (neighbors w h) $ \mas -> do
           IOA.writeArray grid mas '.'
   unShrinkGrid <- IOA.freeze grid :: IO (UA.UArray (Int, Int) Char)
 
+  grid' <- IOA.newArray ((1, 1), (gw, gh)) '#' :: IO (IOA.IOUArray (Int, Int) Char)
+  forM_ [1..gh] $ \h -> do
+    forM_ [1..gw] $ \w -> do
+      let c = unShrinkGrid UA.! (w, h)
+      IOA.writeArray grid' (w, h) c
   
-  showGrid gw gh unShrinkGrid
+  
+  forM_ [1..gh] $ \h -> do
+    forM_ [1..gw] $ \w -> do
+      let c = unShrinkGrid UA.! (w, h)
+      when (c == '#') $ do
+        forM_ (neighbors w h) $ \mas -> do
+          IOA.writeArray grid' mas '#'
+  shrinkGrid' <- IOA.freeze grid' :: IO (UA.UArray (Int, Int) Char)
+
+  if shrinkGrid == shrinkGrid'
+    then do
+      putStrLn "possible"
+      showGrid gw gh unShrinkGrid
+    else putStrLn "impossible"
 
 showGrid :: Int -> Int -> UA.UArray (Int, Int) Char -> IO ()
 showGrid w h grid = do
