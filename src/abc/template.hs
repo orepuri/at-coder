@@ -20,6 +20,7 @@ main = do
   cs <- VU.replicateM n $ do
     [a, b, c] <- map read . words <$> getLine
     return (a, b, c)
+  hs <- VU.replicateM n $ fst . fromJust . C.readInt <$> C.getLine
   let gw = 10
       gh = 10
   grid <- AU.listArray ((1,1),(gh,gw)) . concat <$> replicateM gh getLine  :: IO (AU.Array (Int, Int) Char)
