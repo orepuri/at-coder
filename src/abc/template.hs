@@ -21,6 +21,9 @@ main = do
     [a, b, c] <- map read . words <$> getLine
     return (a, b, c)
   hs <- VU.replicateM n $ fst . fromJust . C.readInt <$> C.getLine
+  abs <- VU.replicateM n $ do
+    [a, b] <- map (fst . fromJust . C.readInt) . C.words <$> C.getLine
+    return (a, b)
   let gw = 10
       gh = 10
   grid <- AU.listArray ((1,1),(gh,gw)) . concat <$> replicateM gh getLine  :: IO (AU.Array (Int, Int) Char)
