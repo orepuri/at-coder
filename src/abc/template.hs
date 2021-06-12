@@ -1,4 +1,6 @@
 import Control.Monad
+import Control.Monad.Primitive
+
 import qualified Data.Array.IO as AIO
 import qualified Data.Array.Unboxed as AU
 import qualified Data.ByteString.Char8 as C
