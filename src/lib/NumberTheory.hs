@@ -3,6 +3,15 @@ module NumberTheory where
 factors :: Int -> [Int]
 factors n = [x|x <- [1..n], n `mod` x == 0]
 
+
+primes = sieve [2..]
+sieve (p:ps) = p : sieve [x|x<-ps, x `mod`p == 0]
+
+isPrime :: Int -> Bool
+isPrime x = all (\n -> x `mod` n /= 0) [2..m]
+  where
+    m = floor $ sqrt $ fromIntegral x
+
 -- ax + by = gcd(a, b)
 -- extGcd a b = (gcd(a, b), x, y)
 
