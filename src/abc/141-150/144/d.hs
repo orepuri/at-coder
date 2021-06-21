@@ -1,5 +1,3 @@
-{-# LANGUAGE BangPatterns #-}
-
 import Control.Monad
 import Control.Monad.Primitive
 
@@ -12,7 +10,6 @@ import qualified Data.IntMap as IM
 import qualified Data.IntSet as IS
 
 import Data.Maybe
-import qualified Data.Vector as V
 import qualified Data.Vector.Unboxed as VU
 import qualified Data.Vector.Unboxed.Mutable as VUM
 import qualified Data.Vector.Algorithms.Intro as VAI
