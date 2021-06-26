@@ -17,6 +17,9 @@ import qualified Data.Vector.Unboxed as VU
 import qualified Data.Vector.Unboxed.Mutable as VUM
 import qualified Data.Vector.Algorithms.Intro as VAI
 
+import Debug.Trace
+
+
 main :: IO ()
 main = do
   n <- readLn :: IO Int

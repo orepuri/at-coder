@@ -1,16 +1,37 @@
 module NumberTheory where
 
 factors :: Int -> [Int]
-factors n = [x|x <- [1..n], n `mod` x == 0]
+factors n = [ x | x <- [1..n], n `mod` x == 0]
 
-
+primes :: [Int]
 primes = sieve [2..]
-sieve (p:ps) = p : sieve [x|x<-ps, x `mod`p == 0]
+sieve :: Integral a => [a] -> [a]
+sieve (p:ps) = p : sieve [ x |x<-ps, x `mod`p /= 0]
+sieve [] = undefined 
+
+factor :: Int -> [Int] -> Int
+factor n (x:xs)
+  | n `mod` x == 0 = x
+  | otherwise = factor n xs
+factor _ [] = undefined 
 
 isPrime :: Int -> Bool
 isPrime x = all (\n -> x `mod` n /= 0) [2..m]
   where
     m = floor $ sqrt $ fromIntegral x
+
+primeFactors :: Int -> [Int]
+primeFactors 1 = []
+primeFactors n = loop1 n
+  where
+    loop1 n
+      | even n = 2 : loop1 (n `div` 2)
+      | otherwise = loop2 n 3
+    loop2 n d
+      | n < d * d = [ n | n /= 1 ]
+      | otherwise = case n `divMod` d of
+        (p, 0) -> d : loop2 p d
+        _ -> loop2 n (d + 2)
 
 -- ax + by = gcd(a, b)
 -- extGcd a b = (gcd(a, b), x, y)
