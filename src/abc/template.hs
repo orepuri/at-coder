@@ -11,6 +11,7 @@ import Data.List
 import qualified Data.IntMap as IM
 import qualified Data.IntSet as IS
 
+import Data.Bits
 import Data.Maybe
 import qualified Data.Vector as V
 import qualified Data.Vector.Unboxed as VU
@@ -18,7 +19,7 @@ import qualified Data.Vector.Unboxed.Mutable as VUM
 import qualified Data.Vector.Algorithms.Intro as VAI
 
 import Debug.Trace
-
+import Text.Printf
 
 main :: IO ()
 main = do
